@@ -10,6 +10,7 @@ import biz.source_code.miniTemplator.MiniTemplator.VariableNotDefinedException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.List;
@@ -39,7 +40,7 @@ public abstract class AbstractConfluenceMojo extends AbstractBaseConfluenceMojo 
      * Home page template source. Template name will be used also as template source for children
      */
     @Parameter(defaultValue = "${basedir}/src/site/confluence/template.wiki")
-    protected java.io.File templateWiki;
+    protected URL templateWiki;
 
     /**
      * attachment folder

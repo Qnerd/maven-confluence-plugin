@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -63,6 +64,28 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         
         if (source != null && source.exists() && source.isFile() && source.canRead() ) {
             page.setUri(source.toURI());
+        }
+        else {
+            try {
+                java.net.URL sourceUrl = getClass().getClassLoader().getResource("defaultTemplate.confluence");
+                page.setUri( sourceUrl.toURI() );
+            } catch (URISyntaxException ex) {
+                // TODO log
+            }
+        }
+        
+    }
+    private void setPageUriFormFile( Site.Page page, URL source ) {
+        if( page == null ) {
+            throw new IllegalArgumentException( "page is null!");
+        }
+        
+        if (source != null  ) {
+        	try {
+                page.setUri( source.toURI() );
+            } catch (URISyntaxException ex) {
+                // TODO log
+            }
         }
         else {
             try {
@@ -292,7 +315,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                         Site.Page child = new Site.Page();
 
                         child.setName(file.getName());
-                        setPageUriFormFile(child, new java.io.File(file,templateWiki.getName()) );
+                        setPageUriFormFile(child, new java.io.File(file,templateWiki.getFile()) );
  
                         parentChild.getChildren().add(child);
  
@@ -303,7 +326,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                     
                     final String fileName = file.getName();
 
-                    if (!file.isFile() || !file.canRead() || !fileName.endsWith( getFileExt() ) || fileName.equals(templateWiki.getName())) {
+                    if (!file.isFile() || !file.canRead() || !fileName.endsWith( getFileExt() ) || fileName.equals(templateWiki.getFile())) {
                         return false;
                     }
 
@@ -336,7 +359,6 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
         home.setName(getTitle());
         
         setPageUriFormFile(home, templateWiki);
-        
         result.setHome( home );
         
 
@@ -357,7 +379,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                         Site.Page parentChild = new Site.Page();
 
                         parentChild.setName(file.getName());
-                        setPageUriFormFile(parentChild, new java.io.File(file,templateWiki.getName()) );
+                        setPageUriFormFile(parentChild, new java.io.File(file,templateWiki.getFile()) );
 
                         result.getHome().getChildren().add(parentChild);
 
@@ -368,7 +390,7 @@ public abstract class AbstractConfluenceSiteMojo extends AbstractConfluenceMojo 
                      
                     final String fileName = file.getName();
 
-                    if (!file.isFile() || !file.canRead() || !fileName.endsWith(getFileExt()) || fileName.equals(templateWiki.getName())) {
+                    if (!file.isFile() || !file.canRead() || !fileName.endsWith(getFileExt()) || fileName.equals(templateWiki.getFile())) {
                         return false;
                     }
 
